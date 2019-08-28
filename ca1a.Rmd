@@ -1,0 +1,101 @@
+---
+title: "CA1 van Opstal"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+library(foreign)
+library(tidyverse)
+library(dagitty)
+library(ggdag)
+library(dplyr)
+library(tinytex)
+```
+
+## II
+
+```{r}
+library(haven)
+nhis <- read_dta("nhis2009_subsample_v1112.dta")
+```
+
+## II
+
+a) Two potential outcomes: 
+
+b)
+It could be that the insurance allows the person to get drugs and treatment and thus the insurance could increase health.
+It is also possible that the person will be less carefull with their health because they are insured. Therefore an insurance could decrease the health
+
+
+## IV
+```{r}
+ca1a <- dagitty('dag{
+  ins [pos="0,2"]
+  inc [pos="1,4"]
+  qua [pos="2,3"]
+  hap [pos="2,4"]
+  stat [pos="3,2"]
+  use [pos="1,1"]
+  fin [pos="1,0"]
+  risk [pos="1,-1"]
+  rav [pos ="1,-2"]
+  
+  ins <- inc -> hap -> stat
+  inst -> stat
+  ins -> use -> stat
+  ins -> fin -> stat
+  ins <- inc -> qua -> stat
+  ins -> risk -> stat
+  ins <-rav -> stat
+}')
+ggdag(ca1a)
+```
+
+
+a) People with a high income are more likely to have a health-insurance aswell as a better health status through the better quality of food they eat. Therefore, not including income will overestimate the effect of health insurance since it doesn't take into acount the better health status through income.
+
+b) The same goes for the path health insurance <- income -> happiness -> health status as in question a. People who have higher income are still more likely to have an health-insurance and they are more likely to be happy and thus more likely to have a better health-status. Therefore, not including the happiness path would overestimate the effect of health-insurance on health.
+
+c) It is not a case of selection bias since the risky behavior, in this question, does not affect whether or not you have a health insurance. It only affects health status and is affected by health insurance, therefore, it is a mediator
+
+d) Risk aversion would cause a selection bias since it would affect whether or not someone buys a health-insurance and it affects the health status of someone. (Someone who is more risk averse will buy an insurance and behave more safely).
+
+## V
+```{r}
+sumhlth <- nhis %>%
+  filter(fml==0) %>%
+  group_by(hi) %>%
+  summarise(mean_hlth = weighted.mean(hlth,perweight))
+sumhlth
+```
+```{r}
+suminc <- nhis %>%
+  filter(fml==0) %>%
+  group_by(hi) %>%
+  summarise(mean_inc = weighted.mean(incmp,perweight))
+suminc
+```
+## VI
+```{r}
+summary(lm(hlth ~ hi, data=nhis, subset= fml==0, weights = perweight))
+```
+These results suggest an 0.3 increase on health status (on a scale of 1 to 5) for husbands who do own an health insurance in comparison to those who do not own an health-insurance.
+
+```{r}
+summary(lm(hlth ~ hi + incmp, data=nhis, subset= fml==0, weights = perweight))
+```
+These results suggest that having a health-insurance increase the health status of an husband by 0.06 on a scale of 1 to 5 compared to an husband without health-insurance. Income has dimished a lot of the effect of health insurance compared to the regression based solely on whether someone does or does not have an health-insurance.
+

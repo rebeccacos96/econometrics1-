@@ -1,0 +1,75 @@
+---
+title: "ca1b"
+author: "Niels van Opstal"
+date: "8/28/2019"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## I
+
+```{r }
+library(foreign)
+library(tidyverse)
+library(dagitty)
+library(ggdag)
+library(dplyr)
+library(tinytex)
+library(haven)
+```
+
+```{r}
+college <- read_dta ("T21_MM_v1112.dta")
+```
+
+## II
+
+## III
+a) The potential outcomes are: went to a private college or did not go to a private college
+b) It could be expected that your earnings are higher after attenending a private rather than public college because the education, the connections you make to fellow students and other ways you can increase your cultural capital might be better at a private college causing you to get a better position on the labor market.
+
+## IV
+
+a)
+```{r}
+ca1b <- dagitty('dag{
+  pri [pos="0,0"]
+  abi [pos="1,1"]
+  ear [pos="2,0"]
+  ocu [pos="1,-1"]
+  
+  pri -> ear
+  pri <- abi -> ear
+  pri -> ocu -> ear
+}')
+ggdag(ca1b)
+```
+
+b) The variation might come from for example wanting to live to closer to friends or family, winning a scholarship for a particular school, or maybe just a feeling that a certain school "fits" better.
+
+c) Occupation follows from the choice of college since the college offers a certain range of majors and influences earnings becasuse job type does. You occuputaion does not inlfuences the school you attend since it comes after attending a school. What might happen is that someone has a certain preference for a kind of job. This preference would influence the choice of college and the occupation that comes after someone graduates and then influences earnings. This job preference could be considered a confounder, the occupation itself should be considered a mediator.
+
+d) SAT scores would affect both the choice of college as well as the earnings after graduating. Therefore, SAT would be a confounder and have arrows pointing towards both "pri" and "ear"
+
+## V
+
+```{r}
+futear <- college %>%
+ ## filter(fml==0) %>%
+  group_by(PrivateUni) %>%
+  summarise(mean_earnings = weighted.mean(Earnings1996))
+futear
+```
+
+## VI
+
+```{r}
+summary(lm(Earnings1996 ~ PrivateUni, data=college, subset= d_ApplicantGroup_A==1, weights = ))
+```
+
+a) The results suggest that attending a private college will decrease future earnings by 5000 compared to future earnings when not attending a private college. 
+
+b) From the descriptive statistics you could conclude that attending a private college increases your future earnings on average by 19500, the results from the regression suggest that on average future earnings decrease by 5000. The unonditional comparisson of which the results can be seen in the descriptive statistics results overestimate the effect of private college on future earnings because it does not take into account the differences in characteristics of people who attend different colleges. This problem is solved by comparing only students who got admitted to the same group of universities and will therefore have quite the same characteristics. 
