@@ -1,5 +1,5 @@
 ---
-title: "CA1 van Opstal"
+title: "Methods: Econometrics 1 Computer assignment 1a van Opstal"
 output:
   pdf_document: default
   html_document: default
@@ -8,13 +8,14 @@ output:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+# Econometrics Ca1a 
+Rebecca Costello
 
-## R Markdown
+Ties van der Veen
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+Niels van Opstal
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
+2-9-2019
 ```{r}
 library(foreign)
 library(tidyverse)
@@ -31,7 +32,7 @@ library(haven)
 nhis <- read_dta("nhis2009_subsample_v1112.dta")
 ```
 
-## II
+## III
 
 a) Two potential outcomes: 
 

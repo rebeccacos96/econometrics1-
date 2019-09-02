@@ -1,5 +1,5 @@
 ---
-title: "ca1b"
+title: "Methods: Econometrics 1 computer assignment 1b van Opstal"
 author: "Niels van Opstal"
 date: "8/28/2019"
 output: pdf_document
@@ -8,6 +8,16 @@ output: pdf_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
+
+# Computer Assignment 1 b van Opstal
+
+Rebecca Costello
+
+Ties van der Veen
+
+Niels van Opstal
+
+2-9-2019
 
 ## I
 
@@ -50,7 +60,21 @@ ggdag(ca1b)
 
 b) The variation might come from for example wanting to live to closer to friends or family, winning a scholarship for a particular school, or maybe just a feeling that a certain school "fits" better.
 
-c) Occupation follows from the choice of college since the college offers a certain range of majors and influences earnings becasuse job type does. You occuputaion does not inlfuences the school you attend since it comes after attending a school. What might happen is that someone has a certain preference for a kind of job. This preference would influence the choice of college and the occupation that comes after someone graduates and then influences earnings. This job preference could be considered a confounder, the occupation itself should be considered a mediator.
+c) Occupation follows from the choice of college since the college offers a certain range of majors and influences earnings becasuse job type does. You occuputaion does not inlfuences the school you attend since it comes after attending a school. What might happen is that someone has a certain preference for a kind of job. This preference would influence the choice of college and the occupation that comes after someone graduates and then influences earnings. This job preference could be considered a confounder, the occupation itself should be considered a mediator. This would translate into the following causal diagram:
+```{r}
+ca1b <- dagitty('dag{
+  pri [pos="0,0"]
+  abi [pos="2,1"]
+  ear [pos="3,0"]
+  ocu [pos="2,-1"]
+  pref [pos="1, -2"]
+  
+  pri -> ear
+  pri <- abi -> ear
+  pri <- pref -> ocu -> ear
+}')
+ggdag(ca1b)
+```
 
 d) SAT scores would affect both the choice of college as well as the earnings after graduating. Therefore, SAT would be a confounder and have arrows pointing towards both "pri" and "ear"
 
